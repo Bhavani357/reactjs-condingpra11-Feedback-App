@@ -1,50 +1,70 @@
 import {Component} from 'react'
+
 import './index.css'
 
 class Feedback extends Component {
-  state = {isClicked: true}
+  state = {
+    isFeedbackSelected: false,
+  }
 
-  onChangeStatus = () => {
-    this.setState(prevState => ({isClicked: !prevState.isClicked}))
+  onClickEmoji = () => this.setState({isFeedbackSelected: true})
+
+  renderFeedbackQuestion = () => {
+    const {resources} = this.props
+    const {emojis} = resources
+
+    return (
+      <div className="feedback-question-container">
+        <h1 className="feedback-question">
+          How satisfied are you with our customer support performance?
+        </h1>
+        <ul className="emojis-list">
+          {emojis.map(emoji => (
+            <li key={emoji.id}>
+              <button
+                type="button"
+                className="emoji-btn"
+                onClick={this.onClickEmoji}
+              >
+                <img src={emoji.imageUrl} alt={emoji.name} className="emoji" />
+                <br />
+                <span className="emoji-name">{emoji.name}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  renderThankYouScreen = () => {
+    const {resources} = this.props
+    const {loveEmojiUrl} = resources
+
+    return (
+      <div className="thank-you-container">
+        <img src={loveEmojiUrl} alt="love emoji" className="love-emoji" />
+        <h1 className="thank-you-text">Thank You!</h1>
+        <p className="description">
+          We will use your feedback to improve our customer support performance.
+        </p>
+      </div>
+    )
   }
 
   render() {
-    const {resources} = this.props
-    const {emojis, loveEmojiUrl} = resources
-    const {id} = emojis
-    const {isClicked} = this.state
+    const {isFeedbackSelected} = this.state
 
     return (
-      <div className="bg-container">
-        {isClicked === true ? (
-          <div className="card-container">
-            <h1 className="heading">
-              How satisfied are you with our customer support performance?
-            </h1>
-            <ul className="ul-container">
-              {emojis.map(each => (
-                <li key={each.id} className="li-element">
-                  <img
-                    src={each.imageUrl}
-                    alt={each.name}
-                    onClick={this.onChangeStatus}
-                    key={id}
-                    className="image"
-                  />
-                  <p>{each.name}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div className="card-container">
-            <img src={loveEmojiUrl} alt="love emoji" className="image" />
-            <h1 className="heading">Thank You</h1>
-            <p>thank you for your feedback</p>
-          </div>
-        )}
+      <div className="app-container">
+        <div className="feedback-card">
+          {isFeedbackSelected
+            ? this.renderThankYouScreen()
+            : this.renderFeedbackQuestion()}
+        </div>
       </div>
     )
   }
 }
+
 export default Feedback
